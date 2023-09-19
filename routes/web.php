@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Customer web routes
+require __DIR__.'/web/customer.php';
+
+// Administrator web routes
+require __DIR__.'/web/administrator.php';
