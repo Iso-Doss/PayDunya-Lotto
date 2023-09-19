@@ -2,11 +2,6 @@
 
 use App\Http\Controllers\Customer\AuthController;
 use App\Http\Controllers\Customer\HomeController;
-use App\Http\Controllers\Customer\PackageController;
-use App\Http\Controllers\Customer\PackageGroupController;
-use App\Http\Controllers\Customer\ProfileController;
-use App\Http\Controllers\Customer\UnknownPackageController;
-use App\Http\Controllers\Customer\WarehouseAddressController;
 use Illuminate\Support\Facades\Route;
 
 /*
