@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Events\UserAccountEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Auth\SendEmailValidateAccountRequest;
 use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Requests\Auth\SignUpRequest;
@@ -173,7 +174,7 @@ class AuthController extends Controller
      * Sign in traitement controller.
      *
      * @param SignInRequest $request The sign in request.
-     * @return RedirectResponse The redirect response
+     * @return RedirectResponse The redirect response.
      * @throws ValidationException The validation exception.
      */
     public function signIn(SignInRequest $request): RedirectResponse
@@ -188,6 +189,48 @@ class AuthController extends Controller
         event(new UserAccountEvent($user, $dataSignIn));
 
         return redirect()->intended(route($this->profile . '.dashboard'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
+    }
+
+    /**
+     * Forgot password form view.
+     *
+     * @return View Forgot password form view.
+     */
+    public function forgotPasswordForm(): View
+    {
+        return view($this->profile . '.auth.forgot-password');
+    }
+
+    /**
+     * @param ForgotPasswordRequest $request The forgot password request.
+     * @return RedirectResponse The redirect response.
+     */
+    public function forgotPassword(ForgotPasswordRequest $request): RedirectResponse
+    {
+        $user = User::whereEmail($request->validated('email'))->whereProfile($request->validated('profile'))->first();
+
+        if (is_null($user)) {
+            return back()->withInput($request->only('email'))
+                ->withErrors(['email' => trans('passwords.user')]);
+        }
+
+        $oldToken = PasswordResetTokens::where('email', $request->validated('email'))->where('profile', $request->validated('profile'))->where('type', 'FORGOT-PASSWORD')->first();
+
+        if (!is_null($oldToken)) {
+            $token = $oldToken->token;
+        } else {
+            $token = Str::random(64);
+            PasswordResetTokens::create(['email' => $request->validated('email'), 'profile' => $request->validated('profile'), 'token' => $token, 'type' => 'FORGOT-PASSWORD']);
+        }
+
+        // Notification de mot de passe oublié.
+        $dataForgotPassword['title'] = __('Mot de passe oublier sur :app-name', ['app-name' => config('app.name')]);
+        $dataForgotPassword['message'] = __('Mot de passe oublier sur :app-name', ['app-name' => config('app.name')]);
+        $dataForgotPassword['view'] = 'mails.auth.forgot-password';
+        $dataForgotPassword['token'] = $token;
+        event(new UserAccountEvent($user, $dataForgotPassword));
+
+        return back()->withInput($request->only('email'))->with('success', __('passwords.sent'));
     }
 
 }
