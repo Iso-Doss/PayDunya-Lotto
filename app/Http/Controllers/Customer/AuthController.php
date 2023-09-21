@@ -13,6 +13,7 @@ use App\Models\PasswordResetTokens;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -274,6 +275,18 @@ class AuthController extends Controller
         event(new UserAccountEvent($user, $dataResetPassword));
 
         return to_route($this->profile . '.auth.sign-in')->with(['success' => trans('Votre mot de passe a été changé ! Vous pouvez vous connectez.')]);
+    }
+
+    /**
+     * Sign out.
+     *
+     * @return RedirectResponse The redirect response.
+     */
+    public function signOut(): RedirectResponse
+    {
+        Auth::guard($this->getGuard(Auth::user()->profile))->logout();
+
+        return redirect()->route($this->profile . '.auth.sign-in')->with(['success' => 'Vous êtes déconnectez.']);
     }
 
 }
