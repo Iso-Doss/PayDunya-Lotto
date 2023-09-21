@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -115,6 +116,45 @@ class AuthController extends Controller
         event(new UserAccountEvent($user, $dataSignUp));
 
         return redirect()->route($this->profile . '.auth.send-email-validate-account')->with(['success' => __('Un lien de validation de compte vous été envoyé. Veuillez consulter vos mails afin de valider votre compte. N\'oubliez pas de regardez dans vos spams..')]);
+    }
+
+    /**
+     * Validate account traitement controller.
+     */
+    public function validateAccount(string $email, string $token)
+    {
+        $validator = Validator::make(['email' => $email, 'token' => $token, 'type' => 'VALIDATE-ACCOUNT'], [
+            'email' => ['required', 'string', 'email:strict', 'max:255', 'exists:password_reset_tokens,email', 'exists:users,email'],
+            'token' => ['required', 'string', 'max:255', 'exists:password_reset_tokens,token'],
+            'type' => ['required', 'string', 'max:255']
+        ]);
+
+        if ($validator->fails()) {
+            return view($this->profile . '.auth.validate-account', ['email' => $email, 'token' => $token])->withErrors($validator->errors());
+        }
+
+        $user = User::whereEmail($email)->whereProfile('CUSTOMER')->first();
+
+        $validateAccountToken = PasswordResetTokens::where('email', $email)->where('profile', 'CUSTOMER')->where('token', $token);
+
+        if (is_null($validateAccountToken->first()) || $validateAccountToken->first()->email != $user->email) {
+            return back()->withErrors(['token' => __('Le champ :attributes sélectionné / renseigné est invalide.', ['attributes' => 'token'])]);
+        }
+
+        $user->verified_at = now();
+        $user->activated_at = now();
+        $user->email_verified_at = now();
+        $user->update();
+
+        $validateAccountToken->delete();
+
+        // Notification de validation de compte.
+        $dataValidateAccount['title'] = __('Validation de compte sur :app-name', ['app-name' => config('app.name')]);
+        $dataValidateAccount['message'] = __('Validation de compte sur :app-name', ['app-name' => config('app.name')]);
+        $dataValidateAccount['view'] = 'mails.auth.validate-account';
+        event(new UserAccountEvent($user, $dataValidateAccount));
+
+        return view($this->profile . '.auth.validate-account', ['success' => __('Votre compte a été validé. Vous pouvez vous connecter.')]);
     }
 
 }
