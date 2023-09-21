@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Events\UserAccountEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\SendEmailValidateAccountRequest;
 use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Requests\Auth\SignUpRequest;
@@ -202,6 +203,8 @@ class AuthController extends Controller
     }
 
     /**
+     *  Forgot password traitement controller.
+     *
      * @param ForgotPasswordRequest $request The forgot password request.
      * @return RedirectResponse The redirect response.
      */
@@ -231,6 +234,46 @@ class AuthController extends Controller
         event(new UserAccountEvent($user, $dataForgotPassword));
 
         return back()->withInput($request->only('email'))->with('success', __('passwords.sent'));
+    }
+
+    /**
+     * Reset password form view.
+     *
+     * @return View reset password form view.
+     */
+    public function resetPasswordForm(string $email, string $token): View
+    {
+        return view($this->profile . '.auth.reset-password', ['email' => $email, 'token' => $token]);
+    }
+
+    /**
+     *  Reset password traitement controller.
+     *
+     * @param ResetPasswordRequest $request The reset password request.
+     * @return RedirectResponse The redirect response.
+     */
+    public function resetPassword(ResetPasswordRequest $request): RedirectResponse
+    {
+        $user = User::whereEmail($request->validated('email'))->whereProfile($request->validated('profile'))->first();
+
+        $passwordResetToken = PasswordResetTokens::where('email', $request->validated('email'))->where('profile', $request->validated('profile'))->where('token', $request->validated('token'))->where('type', 'FORGOT-PASSWORD');
+
+        if (is_null($passwordResetToken->first()) || $passwordResetToken->first()->email != $user->email) {
+            return back()->withInput($request->only('email', 'token', 'profile'))->withErrors(['token' => __('Le champ :attributes sélectionné / renseigné est invalide.', ['attributes' => 'token'])]);
+        }
+
+        $user->password = Hash::make($request->validated('password'));
+        $user->update();
+
+        $passwordResetToken->delete();
+
+        // Notification de réinitialisation du mot de passe.
+        $dataResetPassword['title'] = __('Réinitialisation du mot de passe sur :app-name', ['app-name' => config('app.name')]);
+        $dataResetPassword['message'] = __('Réinitialisation du mot de passe sur :app-name', ['app-name' => config('app.name')]);
+        $dataResetPassword['view'] = 'mails.auth.reset-password';
+        event(new UserAccountEvent($user, $dataResetPassword));
+
+        return to_route($this->profile . '.auth.sign-in')->with(['success' => trans('Votre mot de passe a été changé ! Vous pouvez vous connectez.')]);
     }
 
 }
