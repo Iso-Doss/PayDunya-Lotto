@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Events\UserAccountEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\SendEmailValidateAccountRequest;
+use App\Http\Requests\Auth\SignInRequest;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Models\PasswordResetTokens;
 use App\Models\User;
@@ -13,6 +14,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthController extends Controller
@@ -155,6 +157,37 @@ class AuthController extends Controller
         event(new UserAccountEvent($user, $dataValidateAccount));
 
         return view($this->profile . '.auth.validate-account', ['success' => __('Votre compte a été validé. Vous pouvez vous connecter.')]);
+    }
+
+    /**
+     * Sign in form controller.
+     *
+     * @return View Sign in form view.
+     */
+    public function signInForm(): View
+    {
+        return view($this->profile . '.auth.sign-in');
+    }
+
+    /**
+     * Sign in traitement controller.
+     *
+     * @param SignInRequest $request The sign in request.
+     * @return RedirectResponse The redirect response
+     * @throws ValidationException The validation exception.
+     */
+    public function signIn(SignInRequest $request): RedirectResponse
+    {
+        $request->authenticate();
+
+        // Notification d'une nouvelle connexion.
+        $user = User::whereEmail($request->validated('email'))->whereProfile($request->validated('profile'))->first();
+        $dataSignIn['title'] = __('Nouvelle connexion sur :app-name', ['app-name' => config('app.name')]);
+        $dataSignIn['message'] = __('Nouvelle connexion sur :app-name', ['app-name' => config('app.name')]);
+        $dataSignIn['view'] = 'mails.auth.sign-in';
+        event(new UserAccountEvent($user, $dataSignIn));
+
+        return redirect()->intended(route($this->profile . '.dashboard'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
     }
 
 }
