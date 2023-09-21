@@ -15,7 +15,7 @@ class UserAccountListener implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(private readonly Mailer $mailer)
+    public function __construct()
     {
         //
     }
