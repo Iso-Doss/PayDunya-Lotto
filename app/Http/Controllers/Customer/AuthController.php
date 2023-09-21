@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Events\UserAccountEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\SendEmailValidateAccountRequest;
 use App\Http\Requests\Auth\SignUpRequest;
 use App\Models\PasswordResetTokens;
 use App\Models\User;
@@ -81,6 +82,39 @@ class AuthController extends Controller
         }
 
         return view($this->profile . '.auth.sign-up-done', ['success' => __('Inscription effectué avec succès. Veuillez consulter vos mails afin de valider votre compte. N\'oubliez pas de regardez dans vos spams..')]);
+    }
+
+    public function sendEmailValidateAccountForm(): View
+    {
+        return view($this->profile . '.auth.send-email-validate-account');
+    }
+
+    public function sendEmailValidateAccount(SendEmailValidateAccountRequest $request): RedirectResponse
+    {
+        $user = User::whereEmail($request->validated('email'))->whereProfile($request->validated('profile'))->first();
+
+        if (!is_null($user->activated_at) && !is_null($user->verified_at)) {
+            return back()->withInput($request->validated())
+                ->with(['error' => trans('Votre compte est déjà activé. Veuillez vous connecter')]);
+        }
+
+        $passwordResetToken = PasswordResetTokens::where('email', $request->validated('email'))->where('profile', $request->validated('profile'))->where('type', 'VALIDATE-ACCOUNT')->first();
+
+        if (!is_null($passwordResetToken)) {
+            $token = $passwordResetToken->token;
+        } else {
+            $token = Str::random(64);
+            PasswordResetTokens::create(['email' => $request->validated('email'), 'profile' => $request->validated('profile'), 'token' => $token, 'type' => 'VALIDATE-ACCOUNT']);
+        }
+
+        // Notification création de compte.
+        $dataSignUp['title'] = __('Création de compte sur :app-name', ['app-name' => config('app.name')]);
+        $dataSignUp['message'] = __('Création de compte sur :app-name', ['app-name' => config('app.name')]);
+        $dataSignUp['view'] = 'mails.auth.sign-up';
+        $dataSignUp['token'] = $token;
+        event(new UserAccountEvent($user, $dataSignUp));
+
+        return redirect()->route($this->profile . '.auth.send-email-validate-account')->with(['success' => __('Un lien de validation de compte vous été envoyé. Veuillez consulter vos mails afin de valider votre compte. N\'oubliez pas de regardez dans vos spams..')]);
     }
 
 }
