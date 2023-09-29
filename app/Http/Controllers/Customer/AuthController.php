@@ -34,7 +34,7 @@ class AuthController extends Controller
     /**
      * Sign up form controller.
      *
-     * @return View Sign up form view.
+     * @return View The sign-up form view.
      */
     public function signUpForm(): View
     {
@@ -45,7 +45,7 @@ class AuthController extends Controller
      * Sign up traitement controller.
      *
      * @param SignUpRequest $request The sign-up request.
-     * @return RedirectResponse|View The redirect response
+     * @return RedirectResponse|View The redirect response.
      */
     public function signUp(SignUpRequest $request): RedirectResponse|View
     {
@@ -90,11 +90,22 @@ class AuthController extends Controller
         return view($this->profile . '.auth.sign-up-done', ['success' => __('Inscription effectué avec succès. Veuillez consulter vos mails afin de valider votre compte. N\'oubliez pas de regardez dans vos spams..')]);
     }
 
+    /**
+     * Send email validate account form controller.
+     *
+     * @return View The send email validate account form view.
+     */
     public function sendEmailValidateAccountForm(): View
     {
         return view($this->profile . '.auth.send-email-validate-account');
     }
 
+    /**
+     * Send email validate account traitement controller.
+     *
+     * @param SendEmailValidateAccountRequest $request The send email validate account request.
+     * @return RedirectResponse The redirect response.
+     */
     public function sendEmailValidateAccount(SendEmailValidateAccountRequest $request): RedirectResponse
     {
         $user = User::whereEmail($request->validated('email'))->whereProfile($request->validated('profile'))->first();
@@ -165,7 +176,7 @@ class AuthController extends Controller
     /**
      * Sign in form controller.
      *
-     * @return View Sign in form view.
+     * @return View The sign-in form view.
      */
     public function signInForm(): View
     {
@@ -190,13 +201,13 @@ class AuthController extends Controller
         $dataSignIn['view'] = 'mails.auth.sign-in';
         event(new UserAccountEvent($user, $dataSignIn));
 
-        return redirect()->intended(route($this->profile . '.dashboard'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
+        return redirect()->intended(route($this->profile . '.package.index'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
     }
 
     /**
-     * Forgot password form view.
+     * Forgot password form controller.
      *
-     * @return View Forgot password form view.
+     * @return View The forgot password form view.
      */
     public function forgotPasswordForm(): View
     {
@@ -204,7 +215,7 @@ class AuthController extends Controller
     }
 
     /**
-     *  Forgot password traitement controller.
+     * Forgot password traitement controller.
      *
      * @param ForgotPasswordRequest $request The forgot password request.
      * @return RedirectResponse The redirect response.
@@ -238,9 +249,9 @@ class AuthController extends Controller
     }
 
     /**
-     * Reset password form view.
+     * Reset password form controller.
      *
-     * @return View reset password form view.
+     * @return View The reset password form view.
      */
     public function resetPasswordForm(string $email, string $token): View
     {
@@ -248,7 +259,7 @@ class AuthController extends Controller
     }
 
     /**
-     *  Reset password traitement controller.
+     * Reset password traitement controller.
      *
      * @param ResetPasswordRequest $request The reset password request.
      * @return RedirectResponse The redirect response.
@@ -278,7 +289,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Sign out.
+     * Sign out traitement controller.
      *
      * @return RedirectResponse The redirect response.
      */
