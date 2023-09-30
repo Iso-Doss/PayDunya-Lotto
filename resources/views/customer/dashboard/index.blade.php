@@ -2,7 +2,7 @@
 
 @extends($profile . '.dashboard.base')
 
-@section('title', __('Mes colis'))
+@section('title', __('Ma Loterie'))
 
 @section('main-content')
 

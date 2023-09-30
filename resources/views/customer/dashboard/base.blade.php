@@ -97,8 +97,8 @@
                                     </div>
                                     <!-- Button -->
                                     <div class="mt-2 mt-sm-0">
-                                        <a href="{{ route($profile .'.package.create') }}" class="btn btn-success mb-0">
-                                            {{ __('Ajouter un colis') }}
+                                        <a href="{{-- route($profile .'.package.create') --}}" class="btn btn-success mb-0">
+                                            {{ __('Acheter un ticket') }}
                                         </a>
                                     </div>
                                 </div>
@@ -197,38 +197,17 @@
                                 <div class="bg-dark border rounded-3 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.package.')) active @endif"
-                                           href="{{ route($profile . '.package.index') }}">
-                                            <i class="fas fa-box fa-fw me-2"></i>
-                                            {{ __('Mes colis') }}
-                                        </a>
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.package-group.')) active @endif"
-                                           href="{{ route($profile . '.package-group.index') }}">
-                                            <i class="fas fa-boxes fa-fw me-2"></i>
-                                            {{ __('Mes groupes de colis') }}
+                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.dashboard')) active @endif"
+                                           href="{{ route($profile . '.dashboard') }}">
+                                            <i class="bi bi-house fa-fw me-2"></i>
+                                            {{ __('Ma Loterie') }}
                                         </a>
 
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.warehouse-address.')) active @endif"
-                                           href="{{ route($profile . '.warehouse-address.index') }}">
-                                            <i class="far fa-address-book me-2"></i>
-                                            {{ __('Adresses entrepôts') }}
+                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.transactions.')) active @endif"
+                                           href="{{-- route($profile . '.transactions.index') --}}">
+                                            <i class="fas fa-wallet fa-fw me-2"></i>
+                                            {{ __('Mes transactions') }}
                                         </a>
-
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.unknown-package.')) active @endif"
-                                           href="{{ route($profile . '.unknown-package.index') }}">
-                                            <i class="fas fa-parachute-box fa-fw me-2"></i>
-                                            {{ __('Colis inconnus') }}
-                                        </a>
-
-                                        {{--<a class="list-group-item" href="#">--}}
-                                        {{--    <i class="far fa-fw fa-file-alt me-2"></i>--}}
-                                        {{--    {{ __('Devis') }}--}}
-                                        {{--</a>--}}
-
-                                        {{--<a class="list-group-item" href="#">--}}
-                                        {{--    <i class="far fa-fw fa-file-alt me-2"></i>--}}
-                                        {{--    {{ __('Factures') }}--}}
-                                        {{--</a>--}}
 
                                         <a class="list-group-item @if(str_starts_with($routeName, $profile . '.profile.')) active @endif"
                                            href="{{ route($profile . '.profile.index') }}">
@@ -236,12 +215,18 @@
                                             {{ __('Profil') }}
                                         </a>
 
+                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.settings.')) active @endif"
+                                           href="{{-- route($profile . '.settings.index') --}}">
+                                            <i class="bi bi-gear fa-fw me-2"></i>
+                                            {{ __('Paramètres') }}
+                                        </a>
+
                                         {{--<a class="list-group-item" href="#">--}}
                                         {{--    <i class="bi bi-gear fa-fw me-2"></i>--}}
                                         {{--    {{ __('Paramètres') }}--}}
                                         {{--</a>--}}
 
-                                        <a class="list-group-item" href="{{ route($profile . '.faq') }}">
+                                        <a class="list-group-item" href="{{-- route($profile . '.faq') --}}">
                                             <i class="bi bi-info-circle fa-fw me-2"></i>
                                             {{ __('Aides') }}
                                         </a>
