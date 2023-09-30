@@ -1,0 +1,15 @@
+INSERT INTO `countries` (`id`, `code`, `activated_at`, `name`, `phone_code`)
+VALUES (null, 'BJ', current_timestamp, 'Benin', '+229'),
+       (null, 'BF', current_timestamp, 'Burkina Faso', '+226'),
+       (null, 'CI', current_timestamp, 'Côte d''ivoire', '+225'),
+       (null, 'ML', current_timestamp, 'Mali', '+223'),
+       (null, 'SN', current_timestamp, 'Senegal', '+221'),
+       (null, 'TG', current_timestamp, 'Togo', '+228'),
+       (null, 'CM', NULL, 'Cameroon', '+237'),
+       (null, 'CG', NULL, 'Congo', '+242'),
+       (null, 'FR', NULL, 'France', '+33'),
+       (null, 'GA', NULL, 'Gabon', '+241'),
+       (null, 'GE', NULL, 'Georgia', '+7880'),
+       (null, 'GH', NULL, 'Ghana', '+233'),
+       (null, 'NE', NULL, 'Niger', '+227'),
+       (null, 'NG', NULL, 'Nigeria', '+234');
