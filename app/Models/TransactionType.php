@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @mixin IdeHelperCountry
+ * @mixin IdeHelperTransactionType
  */
-class Country extends Model
+class TransactionType extends Model
 {
     use HasFactory, softDeletes;
 
@@ -22,17 +22,19 @@ class Country extends Model
     protected $fillable = [
         'name',
         'code',
-        'phone_code',
+        'description',
+        'icon',
+        'color',
         'activated_at'
     ];
 
     /**
-     * Get the country users.
+     * get the transaction type transactions.
      *
      * @return HasMany The has many.
      */
-    public function users(): HasMany
+    public function transactions(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Transaction::class);
     }
 }

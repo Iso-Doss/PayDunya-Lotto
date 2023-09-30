@@ -64,8 +64,14 @@ class User extends Authentication
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_number_verified_at' => 'datetime'
     ];
 
+    /**
+     * The user country.
+     *
+     * @return BelongsTo The belongs to.
+     */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
