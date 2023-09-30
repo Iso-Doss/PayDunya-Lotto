@@ -37,14 +37,17 @@
                        data-bs-toggle="dropdown"
                        href="#" id="dropdownLanguage">
                         <i class="fas fa-globe me-2"></i>
-                        Langue
+                        {{ __(':lang', ['lang' => (Lang::locale() == 'fr') ? 'Français' : 'Anglais' ]) }}
                     </a>
+
                     <div aria-labelledby="dropdownLanguage" class="dropdown-menu mt-2 min-w-auto shadow">
-                        <a class="dropdown-item me-4" href="#">
+                        <a class="dropdown-item me-4 @if(Lang::locale() == 'fr') active @endif"
+                           href="{{ route( 'set-lang', ['lang' => 'fr']) }}">
                             <img alt="" class="fa-fw me-2" src="{{ asset('assets/images/flags/fr.svg') }}">
                             {{ __('Français') }}
                         </a>
-                        <a class="dropdown-item me-4" href="#">
+                        <a class="dropdown-item me-4 @if(Lang::locale() == 'en') active @endif"
+                           href="{{ route( 'set-lang', ['lang' => 'en']) }}">
                             <img alt="" class="fa-fw me-2" src="{{ asset('assets/images/flags/uk.svg') }}">
                             {{ __('Anglais') }}
                         </a>
@@ -180,7 +183,7 @@
 
                     <li class="nav-item">
                         <a class="nav-link @if($routeName == $profile . '.sites') active @endif"
-                           href="#">
+                           href="">
                             {{ __('Tirages') }}
                         </a>
                     </li>
@@ -219,64 +222,81 @@
                                         class="card-header bg-transparent border-bottom py-4 d-flex justify-content-between align-items-center">
                                         <h6 class="m-0">
                                             {{ __('Notifications') }}
-                                            <span class="badge bg-danger bg-opacity-10 text-danger ms-2">
-                                                {{ __(':nbr-notification nouveaux', ['nbr-notification' => auth('customer')->user()->unreadNotifications->count()]) }}
-                                            </span>
+                                            @if(sizeof($notifications) > 0)
+                                                <span class="badge bg-success bg-opacity-10 text-success ms-2">
+                                                    {{ __(':nbr-notification nouveaux', ['nbr-notification' => auth('customer')->user()->unreadNotifications->count()]) }}
+                                                </span>
+                                            @endif
                                         </h6>
-                                        <a class="small" href="#">{{ __('Effacer tous') }}</a>
                                     </div>
+
                                     <div class="card-body p-0">
                                         <ul class="list-group list-unstyled list-group-flush">
                                             <!-- Notif item -->
-                                            @if(!empty($notifications))
+                                            @if(sizeof($notifications) > 0)
                                                 @php $last = 3; @endphp
                                                 @foreach($notifications as $notification)
                                                     @if($last > 0)
                                                         <li>
-                                                            <a href="#"
-                                                               class="list-group-item-action border-0 border-bottom d-flex p-3">
-                                                                <div class="me-3">
-                                                                    <div
-                                                                        class="mb-0 w-50px h-50px btn btn-round bg-orange bg-opacity-10 text-orange d-flex justify-content-center align-items-center">
-                                                                        @if('App\Notifications\UserAccountNotification' == $notification->type)
-                                                                            @if(!@empty(auth('agent')->user()->avatar))
-                                                                                <img
-                                                                                    class="avatar-img rounded-circle"
-                                                                                    src="{{ '/storage/' . auth('customer')->user()->avatar }}"
-                                                                                    alt="{{ __('Avatar de l\'utilisateur') }}">
-                                                                            @elseif(!@empty(auth('agent')->user()->first_name) && !@empty(auth('agent')->user()->last_name))
-                                                                                <span
-                                                                                    class="text-orange position-absolute top-50 start-50 translate-middle fw-bold">
+                                                            <form
+                                                                action="{{ route($profile . '.notification.mark-as-read-or-as-unread', ['notification_id' => $notification, 'new_status' => 'READ']) }}"
+                                                                method="post">
+                                                                @csrf
+                                                                <div
+                                                                    class="list-group-item-action border-0 border-bottom d-flex p-3">
+                                                                    <div class="me-3">
+                                                                        <div
+                                                                            class="mb-0 w-50px h-50px btn btn-round bg-orange bg-opacity-10 text-orange d-flex justify-content-center align-items-center">
+                                                                            @if('App\Notifications\UserAccountNotification' == $notification->type)
+                                                                                @if(!@empty(auth('customer')->user()->avatar))
+                                                                                    <img
+                                                                                        class="avatar-img rounded-circle"
+                                                                                        src="{{ '/storage/' . auth('customer')->user()->avatar }}"
+                                                                                        alt="{{ __('Avatar de l\'utilisateur') }}">
+                                                                                @elseif(!@empty(auth('customer')->user()->first_name) && !@empty(auth('customer')->user()->last_name))
+                                                                                    <span
+                                                                                        class="text-orange position-absolute top-50 start-50 translate-middle fw-bold">
                                                                                 {{ substr(auth('customer')->user()->first_name ?? 'A', 0, 1) }}
-                                                                                    {{ substr(auth('customer')->user()->last_name ?? 'E', 0, 1) }}
+                                                                                        {{ substr(auth('customer')->user()->last_name ?? 'E', 0, 1) }}
                                                                             </span>
-                                                                            @else
-                                                                                <i class="fas fa-user fs-5"></i>
+                                                                                @else
+                                                                                    <i class="fas fa-user fs-5"></i>
+                                                                                @endif
+                                                                            @elseif ('App\Notifications\PackageNotification' == $notification->type)
+                                                                                @if(!@empty($package->image))
+                                                                                    <a href="#" role="button"
+                                                                                       data-bs-toggle="modal"
+                                                                                       data-bs-target="#package-image-modal-{{$package->id}}">
+                                                                                        <img class=""
+                                                                                             src="{{ '/storage/' . $package->image }}"
+                                                                                             alt="{{ __('Image du colis') }}">
+                                                                                    </a>
+                                                                                @else
+                                                                                    <i class="fas fa-box fs-5"></i>
+                                                                                @endif
                                                                             @endif
-                                                                        @elseif ('App\Notifications\PackageNotification' == $notification->type)
-                                                                            @if(!@empty($package->image))
-                                                                                <a href="#" role="button"
-                                                                                   data-bs-toggle="modal"
-                                                                                   data-bs-target="#package-image-modal-{{$package->id}}">
-                                                                                    <img class=""
-                                                                                         src="{{ '/storage/' . $package->image }}"
-                                                                                         alt="{{ __('Image du colis') }}">
-                                                                                </a>
-                                                                            @else
-                                                                                <i class="fas fa-box fs-5"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <p class="text-body small m-0">
+                                                                            {{ $notification->data['title'] }}
+                                                                            @if($notification->unread())
+                                                                                <span
+                                                                                    class="badge bg-success bg-opacity-10 text-success ms-2">
+                                                                                    {{ __('Nouveau') }}
+                                                                                </span>
                                                                             @endif
-                                                                        @endif
+                                                                        </p>
+                                                                        {{--@if($notification->unread())--}}
+                                                                        {{--    <button type="submit"--}}
+                                                                        {{--            class="aec-notification-link text-body small mt-2">--}}
+                                                                        {{--        {{ __('Marquer comme lu') }}--}}
+                                                                        {{--    </button>--}}
+                                                                        {{--@endif--}}
                                                                     </div>
                                                                 </div>
-                                                                <div>
-                                                                    <p class="text-body small m-0">
-                                                                        {{ $notification->data['title'] }}
-                                                                    </p>
-                                                                    @if($notification->unread())
-                                                                        <u class="small">Marquer comme lu</u>
-                                                                    @endif
-                                                                </div>
-                                                            </a>
+                                                            </form>
+
                                                         </li>
                                                     @endif
                                                     @php $last--; @endphp
@@ -289,7 +309,7 @@
                                     <!-- Button -->
                                     <div
                                         class="card-footer bg-transparent border-0 py-3 text-center position-relative">
-                                        <a href="#" class="stretched-link">
+                                        <a href="{{ route($profile . '.notification.index') }}" class="stretched-link">
                                             {{ __('Voir toutes les activités récentes') }}
                                         </a>
                                     </div>
@@ -382,10 +402,17 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
+                                    <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.dashboard')) active @endif"
+                                       href="{{ route($profile . '.dashboard') }}">
+                                        <i class="bi bi-house fa-fw me-2"></i>
+                                        {{ __('Ma Loterie') }}
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.package.')) active @endif"
-                                       href="{{ route($profile . '.package.index') }}">
-                                        <i class="fas fa-box fa-fw me-2"></i>
-                                        {{ __('Mes colis') }}
+                                       href="{{-- route($profile . '.package.index') --}}">
+                                        <i class="fas fa-wallet fa-fw me-2"></i>
+                                        {{ __('Mes transactions') }}
                                     </a>
                                 </li>
                                 <li>
@@ -402,7 +429,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="{{ route($profile . '.faq') }}">
+                                    <a class="dropdown-item" href="#">
                                         <i class="bi bi-info-circle fa-fw me-2"></i>
                                         {{ __('Aides') }}
                                     </a>
@@ -470,12 +497,14 @@
                 <!-- Main navbar END -->
                 <div class="navbar-nav">
                     @if(explode('.', $routeName)[0] == 'customer')
-                        <a href="{{ route($profile .'.auth.sign-in') }}" class="btn btn-sm btn-success-soft mb-0 d-none d-sm-block">
+                        <a href="{{ route($profile .'.auth.sign-in') }}"
+                           class="btn btn-sm btn-success-soft mb-0 d-none d-sm-block">
                             {{ __('Rejoindre PayDunya Lotto') }}
                         </a>
-                        <a href="{{ route($profile .'.auth.sign-in') }}" class="btn btn-sm btn-success-soft mb-0 d-sm-none">
+                        <a href="{{ route($profile .'.auth.sign-in') }}"
+                           class="btn btn-sm btn-success-soft mb-0 d-sm-none">
                             {{ __('Rejoindre PDL') }}
-                        </a
+                        </a>
                     @endif
                     @if(explode('.', $routeName)[0] == 'agent')
                         <a href="{{ route($profile .'.auth.sign-in') }}" class="btn btn-sm btn-success-soft mb-0">
