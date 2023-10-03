@@ -16,6 +16,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('transactions', function (Blueprint $table) {
+            $table->id();
             $table->foreignIdFor(User::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(Lottery::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignIdFor(TransactionType::class)->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
@@ -26,7 +27,6 @@ return new class extends Migration {
             $table->timestamp('activated_at')->nullable()->useCurrent();
             $table->softDeletes();
             $table->timestamps();
-            $table->primary(['user_id', 'lottery_id', 'transaction_type_id']);
         });
     }
 

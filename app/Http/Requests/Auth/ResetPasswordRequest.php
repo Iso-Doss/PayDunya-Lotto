@@ -28,7 +28,7 @@ class ResetPasswordRequest extends FormRequest
             'token' => ['required', 'string', 'max:255', 'exists:password_reset_tokens,token'],
             'password' => ['required', 'string', 'max:255', Rules\Password::defaults(), 'confirmed'],
             'password_confirmation' => ['required', 'string', 'max:255', Rules\Password::defaults(), 'same:password'],
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR']
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR']
         ];
     }
 }

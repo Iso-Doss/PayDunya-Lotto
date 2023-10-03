@@ -2,6 +2,10 @@
 
 use App\Http\Controllers\Customer\AuthController;
 use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Customer\LotteryController;
+use App\Http\Controllers\Customer\NotificationController;
+use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,6 +70,50 @@ Route::name('customer.')->group(function () {
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('delete-account');
 
         });
+
+        Route::name('notification.')->prefix('/notification')->group(function () {
+
+            Route::get('/', [NotificationController::class, 'index'])->name('index');
+
+            Route::post('/mark-as-read-or-as-unread/{notification_id}/{new_status}', [NotificationController::class, 'markAsReadOrAsUnread'])->name('mark-as-read-or-as-unread');
+
+            Route::delete('/delete/{notification_id}', [NotificationController::class, 'delete'])->name('delete');
+
+            Route::post('/mark-all-as-read-or-as-unread/{new_status}', [NotificationController::class, 'markAllAsReadOrAsUnread'])->name('mark-all-as-read-or-as-unread');
+
+            Route::delete('/delete-all', [NotificationController::class, 'deleteAll'])->name('delete-all');
+
+        });
+
+
+        Route::name('transaction.')->prefix('/transaction')->group(function () {
+
+            Route::get('/', [TransactionController::class, 'index'])->name('index');
+
+            // Route::get('/create', [TransactionController::class, 'createForm'])->name('create');
+
+            // Route::post('/create', [TransactionController::class, 'create'])->name('create');
+
+            // Route::get('/update/{transaction}', [TransactionController::class, 'updateForm'])->name('update');
+
+            // Route::post('/update/{transaction}', [TransactionController::class, 'update'])->name('update');
+
+            Route::post('/enable-disable/{transaction}/{new_status}', [TransactionController::class, 'enableDisable'])->name('enable-disable');
+
+            Route::delete('/delete/{transaction}', [TransactionController::class, 'delete'])->name('delete');
+
+        });
+
+        Route::name('lottery.')->prefix('/lottery')->group(function () {
+
+            Route::get('/', [LotteryController::class, 'index'])->name('index');
+
+            Route::get('/buy-ticket', [LotteryController::class, 'buyTicketForm'])->name('buy-ticket');
+
+            Route::post('/buy-ticket', [LotteryController::class, 'buyTicket'])->name('buy-ticket');
+
+        });
+
 
         Route::post('/auth/sign-out', [AuthController::class, 'signOut'])->name('auth.sign-out');
 

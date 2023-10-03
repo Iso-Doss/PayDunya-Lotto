@@ -58,6 +58,10 @@
                        class="form-control bg-light rounded-end ps-1 password @error('password'){{'is-invalid'}}@enderror"
                        id="password" placeholder="{{ __('Veuillez entrer votre mot de passe') }}"
                        value="{{ old('password') }}" required>
+
+                <span class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                    <i class="far fa-eye"></i>
+                </span>
             </div>
             <div id="passwordHelpBlock" class="form-text">
                 {{ __('Votre mot de passe doit comporter au moins 8 caractères') }}
@@ -83,6 +87,10 @@
                        class="form-control bg-light rounded-end ps-1 password-confirmation @error('password_confirmation'){{'is-invalid'}}@enderror"
                        id="password-confirmation" placeholder="{{ __('Veuillez confirmer le mot de passe') }}"
                        value="{{ old('password_confirmation') }}" required>
+
+                <span class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                    <i class="far fa-eye"></i>
+                </span>
             </div>
             <div id="passwordHelpBlock" class="form-text">
                 {{ __('Votre mot de passe doit comporter au moins 8 caractères') }}

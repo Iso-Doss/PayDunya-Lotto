@@ -262,18 +262,6 @@
                                                                                 @else
                                                                                     <i class="fas fa-user fs-5"></i>
                                                                                 @endif
-                                                                            @elseif ('App\Notifications\PackageNotification' == $notification->type)
-                                                                                @if(!@empty($package->image))
-                                                                                    <a href="#" role="button"
-                                                                                       data-bs-toggle="modal"
-                                                                                       data-bs-target="#package-image-modal-{{$package->id}}">
-                                                                                        <img class=""
-                                                                                             src="{{ '/storage/' . $package->image }}"
-                                                                                             alt="{{ __('Image du colis') }}">
-                                                                                    </a>
-                                                                                @else
-                                                                                    <i class="fas fa-box fs-5"></i>
-                                                                                @endif
                                                                             @endif
                                                                         </div>
                                                                     </div>
@@ -402,15 +390,15 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.dashboard')) active @endif"
-                                       href="{{ route($profile . '.dashboard') }}">
+                                    <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.lottery')) active @endif"
+                                       href="{{ route($profile . '.lottery.index') }}">
                                         <i class="bi bi-house fa-fw me-2"></i>
                                         {{ __('Ma Loterie') }}
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.package.')) active @endif"
-                                       href="{{-- route($profile . '.package.index') --}}">
+                                    <a class="dropdown-item @if(str_starts_with($routeName, $profile . '.transaction.')) active @endif"
+                                       href="{{ route($profile . '.transaction.index') }}">
                                         <i class="fas fa-wallet fa-fw me-2"></i>
                                         {{ __('Mes transactions') }}
                                     </a>

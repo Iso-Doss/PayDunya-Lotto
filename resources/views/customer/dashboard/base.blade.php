@@ -97,8 +97,8 @@
                                     </div>
                                     <!-- Button -->
                                     <div class="mt-2 mt-sm-0">
-                                        <a href="{{-- route($profile .'.package.create') --}}" class="btn btn-success mb-0">
-                                            {{ __('Acheter un ticket') }}
+                                        <a href="{{ route($profile .'.lottery.buy-ticket') }}" class="btn btn-success mb-0">
+                                            {{ __('Acheter un billet') }}
                                         </a>
                                     </div>
                                 </div>
@@ -197,14 +197,14 @@
                                 <div class="bg-dark border rounded-3 p-3 w-100">
                                     <!-- Dashboard menu -->
                                     <div class="list-group list-group-dark list-group-borderless collapse-list">
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.dashboard')) active @endif"
-                                           href="{{ route($profile . '.dashboard') }}">
+                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.lottery')) active @endif"
+                                           href="{{ route($profile . '.lottery.index') }}">
                                             <i class="bi bi-house fa-fw me-2"></i>
                                             {{ __('Ma Loterie') }}
                                         </a>
 
-                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.transactions.')) active @endif"
-                                           href="{{-- route($profile . '.transactions.index') --}}">
+                                        <a class="list-group-item @if(str_starts_with($routeName, $profile . '.transaction.')) active @endif"
+                                           href="{{ route($profile . '.transaction.index') }}">
                                             <i class="fas fa-wallet fa-fw me-2"></i>
                                             {{ __('Mes transactions') }}
                                         </a>

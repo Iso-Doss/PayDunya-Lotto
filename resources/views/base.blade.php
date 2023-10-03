@@ -167,7 +167,62 @@ Footer END -->
     (function ($) {
         $(document).ready(function () {
 
+            $(document).on('change', 'select#profile-user-type', function () {
+                hideOrShowNames($(this).val());
+            });
+
+            $(document).on('click', '.aec-hide-show-password', function () {
+                let inputPasswordField = $(this).parents('.input-group').find('input');
+                if ('password' === inputPasswordField.attr('type')) {
+                    $(this).find('i.far').removeClass('fa-eye');
+                    $(this).find('i.far').addClass('fa-eye-slash');
+                    inputPasswordField.attr('type', 'text');
+                } else {
+                    $(this).find('i.far').addClass('fa-eye');
+                    $(this).find('i.far').removeClass('fa-eye-slash');
+                    inputPasswordField.attr('type', 'password');
+                }
+            });
+
+            $(document).on('click', '.aec-click-modal', function () {
+                let aecModalTarget = $(this).attr('aec-modal-target');
+                let aecModalTargetSelector = $('[data-bs-target="#' + aecModalTarget + '"]').children();
+                if (aecModalTargetSelector) {
+                    aecModalTargetSelector.click();
+                }
+            });
+
+            $(document).on('click', '.aec-copy-address', function () {
+                let aecCopyAddressTarget = $(this).attr('aec-copy-address-target');
+                let aecCopyAddressTargetSelector = $('[data-aec-copy-address-target="' + aecCopyAddressTarget + '"]');
+                copy(aecCopyAddressTargetSelector.attr('id'), "{{ __("Votre adresse a été copiée avec succès.") }}");
+            });
+
+            $(document).on('keyup keydown change', 'input[name="tracking_number"]', function () {
+                $(this).val($(this).val().toUpperCase());
+            });
+
+            $(document).on('change', 'input[name="has_default_password"]', function () {
+                hideOrShowPasswordFields($(this).is(":checked"));
+            });
+
             hideOrShowNames($('select#profile-user-type').val());
+
+            hideOrShowPasswordFields($('input[name="has_default_password"]').is(":checked"));
+
+            function hideOrShowPasswordFields(has_default_password) {
+                if (has_default_password) {
+                    $('.create-user-password').parent().parent().hide();
+                    $('.create-user-password').removeAttr('required')
+                    $('.create-user-password-confirmation').parent().parent().hide();
+                    $('.create-user-password-confirmation').removeAttr('required')
+                } else {
+                    $('.create-user-password').parent().parent().show();
+                    $('.create-user-password').attr('required', true);
+                    $('.create-user-password-confirmation').parent().parent().show();
+                    $('.create-user-password-confirmation').attr('required', true);
+                }
+            }
 
             function hideOrShowNames(userType) {
                 if ('PHYSICAL-PERSON' == userType) {
@@ -188,93 +243,71 @@ Footer END -->
                 }
             }
 
-            $(document).on('change', 'select#profile-user-type', function (e) {
-                hideOrShowNames($(this).val());
-            });
+            $(document).on('change', 'input[type="file"]', function () {
+                const file = this.files[0];
+                const file_name = file.name;
+                const file_size = parseInt(file.size);
+                const file_name_extension = file_name.substr(file_name.lastIndexOf('.') + 1);
+                const valid_extensions = ['png', 'jpg', 'jpeg', 'svg', 'gif', 'pdf'];
 
-            $(document).on('click', '.aec-hide-show-password', function (e) {
-                let inputPasswordField = $(this).parents('.input-group').find('input');
-                if ('password' === inputPasswordField.attr('type')) {
-                    $(this).removeClass('fa-eye');
-                    $(this).addClass('fa-eye-slash');
-                    inputPasswordField.attr('type', 'text');
-                } else {
-                    $(this).addClass('fa-eye');
-                    $(this).removeClass('fa-eye-slash');
-                    inputPasswordField.attr('type', 'password');
+                if ($.inArray(file_name_extension, valid_extensions) == -1) {
+                    alert("Le type de fichier télécharger n'est pas adéquat. Veuillez télécharger un fichier au format png, jpg, jpeg, svg, gif ou un document pdf.");
+                    return false;
                 }
-            });
 
-            $(document).on('click', '.aec-click-modal', function (e) {
-                let aecModalTarget = $(this).attr('aec-modal-target');
-                let aecModalTargetSelector = $('[data-bs-target="#' + aecModalTarget + '"]').children();
-                if (aecModalTargetSelector) {
-                    aecModalTargetSelector.click();
+                if (file_size > 5258240) {
+                    alert("La taille de fichier télécharger dépasse 5 Mo. Veuillez télécharger un fichier dont la taille est inférieur ou égale a 5 Mo.");
+                    return false;
                 }
-            });
-
-            $(document).on('click', '.aec-copy-address', function (e) {
-                let aecCopyAddressTarget = $(this).attr('aec-copy-address-target');
-                let aecCopyAddressTargetSelector = $('[data-aec-copy-address-target="' + aecCopyAddressTarget + '"]');
-                copy(aecCopyAddressTargetSelector.attr('id'), "{{ __("Votre adresse a été copiée avec succès.") }}");
-            });
-
-            $(document).on('keyup keydown change', 'input[name="tracking_number"]', function () {
-                $(this).val($(this).val().toUpperCase());
-            });
-
-            hideOrShowPasswordFields($('input[name="has_default_password"]').is(":checked"));
-
-            function hideOrShowPasswordFields(has_default_password) {
-                if (has_default_password) {
-                    $('.create-user-password').parent().parent().hide();
-                    $('.create-user-password').removeAttr('required')
-                    $('.create-user-password-confirmation').parent().parent().hide();
-                    $('.create-user-password-confirmation').removeAttr('required')
-                } else {
-                    $('.create-user-password').parent().parent().show();
-                    $('.create-user-password').attr('required', true);
-                    $('.create-user-password-confirmation').parent().parent().show();
-                    $('.create-user-password-confirmation').attr('required', true);
+                const img = $('#aec-upload-image-preview');
+                const img_label_container = img.parent().parent();
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        const result = reader.result;
+                        img.prop('src', result);
+                        img_label_container.removeClass('d-none');
+                        $('.aec-default-image').removeClass('avatar');
+                        $('.aec-default-image').addClass('d-none');
+                    };
+                    reader.readAsDataURL(file);
                 }
+
+            });
+
+            /**
+             * Mettre des séparateurs de milliers pour les champs contenant des montants.
+             */
+            // RDC-ID : trouver la bonne formule (le bon sélecteur), et éviter que le montant soit considéré comme un nombre a virgule dans le controller.
+            $(document).on('change, keyup', '#aec-toto', function (e) {
+
+                let capital = $(this).val();
+
+                $(this).attr("type", "text");
+
+                while (capital.includes(".")) {
+
+                    capital = capital.replace('.', '');
+
+                }
+
+                $(this).val(commify(capital.replace('.', '')));
+
+            });
+
+            /**
+             * Mettre des séparateurs de montant pour le capital.
+             *
+             * @param capital The capital.
+             * @returns {*}
+             */
+            function commify(capital) {
+
+                const thousands = /\B(?=(\d{3})+(?!\d))/g;
+
+                return capital.replace(thousands, ".");
+
             }
-
-            $(document).on('change', 'input[name="has_default_password"]', function (e) {
-                hideOrShowPasswordFields($(this).is(":checked"));
-            });
-
-            // /**
-            //  * Mettre des séparateurs de milliers pour les champs contenant des montants.
-            //  */
-            // $(document).on('change, keyup', '', function (e) {
-            //
-            //     let capital = $(this).val();
-            //
-            //     $(this).attr("type", "text");
-            //
-            //     while (capital.includes(".")) {
-            //
-            //         capital = capital.replace('.', '');
-            //
-            //     }
-            //
-            //     $(this).val(commify(capital.replace('.', '')));
-            //
-            // });
-            //
-            // /**
-            //  * Mettre des séparateurs de montant pour le capital.
-            //  *
-            //  * @param capital The capital.
-            //  * @returns {*}
-            //  */
-            // function commify(capital) {
-            //
-            //     const thousands = /\B(?=(\d{3})+(?!\d))/g;
-            //
-            //     return capital.replace(thousands, ".");
-            //
-            // }
 
             function copy(selector, message) {
                 let text = document.getElementById(selector).innerText;

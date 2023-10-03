@@ -27,7 +27,7 @@ class UpdateEmailProfileRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'email' => ['required', 'email:strict', 'max:255', Rule::unique('users', 'email')->where(fn(Builder $query) => $query->where('profile', $this->input('profile') ?? 'CUSTOMER')->where('id', '<>', Auth::user()->id))],
             'password' => ['required', 'string', 'max:255', Rules\Password::defaults()]
         ];

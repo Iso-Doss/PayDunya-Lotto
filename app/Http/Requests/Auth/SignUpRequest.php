@@ -29,7 +29,7 @@ class SignUpRequest extends FormRequest
 
         $rules = [
             'email' => ['required', 'email:strict', 'max:255', Rule::unique('users', 'email')->where(fn(Builder $query) => $query->where('profile', $this->input('profile') ?? 'CUSTOMER'))],
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'has_default_password' => ['nullable', 'boolean'],
             'terms_condition' => ['required', 'boolean']
         ];

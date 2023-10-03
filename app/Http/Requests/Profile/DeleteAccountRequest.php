@@ -24,7 +24,7 @@ class DeleteAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'delete_account_confirmation' => ['required', 'boolean'],
             'password' => ['required', 'string', 'max:255', Rules\Password::defaults()]
         ];

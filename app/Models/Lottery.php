@@ -60,6 +60,7 @@ class Lottery extends Model
      */
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps()->withPivot(['details'])->orderBy('id', 'desc');
+        return $this->belongsToMany(User::class)->withTimestamps()->withPivot(['details', 'numbers_drawn'])->orderBy('id', 'desc');
+        //return $this->belongsToMany(User::class)->withTimestamps()->withPivot(['details'])->orderBy('id', 'desc');
     }
 }

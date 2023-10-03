@@ -23,7 +23,7 @@ class SendEmailValidateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'email' => ['required', 'string', 'email:strict', 'max:255', 'exists:users,email']
         ];
     }

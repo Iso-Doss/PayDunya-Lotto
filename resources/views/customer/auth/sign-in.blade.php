@@ -76,8 +76,8 @@
                        id="password" placeholder="{{ __('Veuillez entrer votre mot de passe') }}"
                        value="{{ old('password') }}" required>
 
-                <span class="input-group-text bg-light rounded-end text-secondary px-3">
-                    <i class="far fa-eye cursor-pointer aec-hide-show-password"></i>
+                <span class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                    <i class="far fa-eye"></i>
                 </span>
             </div>
             <div id="password-help-block" class="form-text">

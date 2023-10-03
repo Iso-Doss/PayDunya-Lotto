@@ -25465,6 +25465,20 @@ html[dir=rtl] .choices__input {
     background: none;
 }
 
+.aec-cursor-pointer {
+    cursor: pointer;
+}
+
+.aec-notification-link {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.aec-notification-link:hover{
+    text-decoration: underline;
+}
+
 .text-primary-hover a.active {
     color: var(--bs-primary) !important;
 }

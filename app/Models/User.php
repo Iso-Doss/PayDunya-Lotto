@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authentication;
 use Illuminate\Notifications\Notifiable;
@@ -75,6 +76,28 @@ class User extends Authentication
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
+    }
+
+    /**
+     * Get the user lotteries.
+     *
+     * @return BelongsToMany The belongs to many.
+     */
+    public function lotteries(): BelongsToMany
+    {
+        return $this->belongsToMany(Lottery::class)->withTimestamps()->withPivot(['details', 'numbers_drawn', 'amount'])->orderBy('id', 'desc');
+        //return $this->belongsToMany(User::class)->withTimestamps()->withPivot(['details'])->orderBy('id', 'desc');
+    }
+
+    /**
+     * Get the user transactions.
+     *
+     * @return BelongsToMany The belongs to many.
+     */
+    public function transactions(): BelongsToMany
+    {
+        return $this->belongsToMany(Transaction::class)->withTimestamps()->orderBy('id', 'desc');
+        //return $this->belongsToMany(User::class)->withTimestamps()->withPivot(['details'])->orderBy('id', 'desc');
     }
 
 }

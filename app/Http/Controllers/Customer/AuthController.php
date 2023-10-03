@@ -201,7 +201,7 @@ class AuthController extends Controller
         $dataSignIn['view'] = 'mails.auth.sign-in';
         event(new UserAccountEvent($user, $dataSignIn));
 
-        return redirect()->intended(route($this->profile . '.package.index'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
+        return redirect()->intended(route($this->profile . '.dashboard'))->with(['success' => 'Bienvenue cher(e) client(e). Ravi de vous voir !']);
     }
 
     /**

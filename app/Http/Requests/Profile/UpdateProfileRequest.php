@@ -28,7 +28,7 @@ class UpdateProfileRequest extends FormRequest
     {
         $data = $this->all();
         $rules = [
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'user_type' => ['required', 'string', 'max:255', 'in:PHYSICAL-PERSON,CORPORATION'],
             'image' => ['nullable', 'image'],
             //'first_name' => ['required', 'string', 'max:255'],

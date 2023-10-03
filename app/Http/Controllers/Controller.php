@@ -47,9 +47,7 @@ class Controller extends BaseController
     public function getGuard(string $profile): string
     {
         $guard = 'customer';
-        if ('AGENT' == $profile) {
-            $guard = 'agent';
-        } else if ('ADMINISTRATOR' == $profile) {
+        if ('ADMINISTRATOR' == $profile) {
             $guard = 'administrator';
         }
 

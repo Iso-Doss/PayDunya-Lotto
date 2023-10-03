@@ -31,7 +31,7 @@ class SignInRequest extends FormRequest
     {
 
         return [
-            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,AGENT,ADMINISTRATOR'],
+            'profile' => ['required', 'string', 'max:255', 'in:CUSTOMER,ADMINISTRATOR'],
             'email' => ['required', 'string', 'email:strict', 'max:255'],
             'password' => ['required', 'string', 'max:255', Rules\Password::defaults()]
         ];
@@ -46,9 +46,7 @@ class SignInRequest extends FormRequest
     public function authenticate(): void
     {
         $guard = 'customer';
-        if ('AGENT' == $this->validated('profile')) {
-            $guard = 'agent';
-        } else if ('ADMINISTRATOR' == $this->validated('profile')) {
+        if ('ADMINISTRATOR' == $this->validated('profile')) {
             $guard = 'administrator';
         }
 

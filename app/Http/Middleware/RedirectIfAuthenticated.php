@@ -24,11 +24,11 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
 
             if ($guard == "customer" && Auth::guard($guard)->check()) {
-                return redirect('/dashboard');
+                return redirect('/lottery');
             }
 
             if ($guard == "administrator" && Auth::guard($guard)->check()) {
-                return redirect('/admin/dashboard');
+                return redirect('/administrator/lottery');
             }
 
             //if (Auth::guard($guard)->check()) {

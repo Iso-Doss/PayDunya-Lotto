@@ -38,21 +38,28 @@
                                          src="{{ '/storage/' . auth('customer')->user()->avatar }}"
                                          alt="{{ __('Avatar de l\'utilisateur') }}">
                                 </div>
-                            @elseif(!@empty(auth('customer')->user()->first_name) && !@empty(auth('customer')->user()->last_name))
-                                <div class="avatar avatar-md flex-shrink-0 me-3">
-                                    <div class="avatar-img rounded-circle bg-orange bg-opacity-10">
-                                        <span
-                                            class="text-orange position-absolute top-50 start-50 translate-middle fw-bold">
-                                            {{ substr(auth('customer')->user()->first_name ?? 'A', 0, 1) }}
-                                            {{ substr(auth('customer')->user()->last_name ?? 'E', 0, 1) }}
-                                        </span>
-                                    </div>
-                                </div>
                             @else
-                                <div
-                                    class="icon-lg bg-orange rounded-circle bg-opacity-10 text-orange rounded-2 flex-shrink-0">
-                                    <i class="fas fa-user fs-4"></i>
-                                </div>
+                                <label class="position-relative me-4 aec-upload-package d-none"
+                                       for="package-image"
+                                       title="Replace this pic">
+                                    <!-- Avatar place holder -->
+                                    <span class="avatar avatar-xl">
+                                        <img id="aec-upload-image-preview"
+                                             class="avatar-img rounded-circle border border-white border-3 shadow"
+                                             src="#">
+                                    </span>
+                                </label>
+                                @if(!@empty(auth('customer')->user()->first_name) && !@empty(auth('customer')->user()->last_name))
+                                    <div class="aec-default-image avatar avatar-md flex-shrink-0 me-3">
+                                        <div class="avatar-img rounded-circle bg-orange bg-opacity-10">
+                                            <span
+                                                class="text-orange position-absolute top-50 start-50 translate-middle fw-bold">
+                                                {{ substr(auth('customer')->user()->first_name ?? 'A', 0, 1) }}
+                                                {{ substr(auth('customer')->user()->last_name ?? 'E', 0, 1) }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                @endif
                             @endif
                             <!-- Remove btn
                             <button type="button" class="uploadremove">
@@ -262,7 +269,8 @@
                     <input
                         class="form-control profile-registration-number @error('registration_number'){{'is-invalid'}}@enderror"
                         type="text"
-                        name="registration_number" id="profile-registration-number" value="{{ auth('customer')->user()->registration_number }}"
+                        name="registration_number" id="profile-registration-number"
+                        value="{{ auth('customer')->user()->registration_number }}"
                         placeholder="{{ __('Veuillez entrer votre numéro d\'enregistrement') }}" disabled>
                     @error('registration_number')
                     <div class="form-text text-danger">
@@ -402,8 +410,10 @@
                             class="form-control profile-update-password @error('password'){{'is-invalid'}}@enderror"
                             id="profile-update-password" name="password" type="password"
                             placeholder="{{ __('Veuillez entrer votre mot de passe') }}">
-                        <span class="input-group-text p-0 bg-transparent">
-                            <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                        <span
+                            class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                            <i class="far fa-eye"></i>
                         </span>
                     </div>
                     <div class="rounded mt-1" id="psw-strength"></div>
@@ -477,8 +487,10 @@
                                     class="form-control profile-update-password @error('password'){{'is-invalid'}}@enderror"
                                     id="profile-change-email-update-password" name="password" type="password"
                                     placeholder="{{ __('Veuillez entrer votre mot de passe') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             <div class="rounded mt-1" id="psw-strength"></div>
@@ -531,8 +543,10 @@
                                     id="profile-update-password-current-password" name="current_password"
                                     type="password"
                                     placeholder="{{ __('Veuillez entrer votre mot de passe actuel') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             @error('current_password')
@@ -553,8 +567,10 @@
                                     class="form-control profile-update-password-new-password @error('new_password'){{'is-invalid'}}@enderror"
                                     id="profile-update-password-new-password" name="new_password" type="password"
                                     placeholder="{{ __('Veuillez entrer votre nouveau mot de passe') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             <div class="rounded mt-1" id="psw-strength"></div>
@@ -578,8 +594,10 @@
                                     name="new_password_confirmation"
                                     type="password"
                                     placeholder="{{ __('Veuillez entrer retaper votre nouveau mot de passe') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             @error('new_password_confirmation')
@@ -693,8 +711,10 @@
                                     class="form-control disable-account-password @error('password'){{'is-invalid'}}@enderror"
                                     id="disable-account-password" name="password" type="password"
                                     placeholder="{{ __('Veuillez entrer votre mot de passe') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             <div class="rounded mt-1" id="psw-strength"></div>
@@ -770,8 +790,10 @@
                                     class="form-control delete-account-password @error('password'){{'is-invalid'}}@enderror"
                                     id="delete-account-password" name="password" type="password"
                                     placeholder="{{ __('Veuillez entrer votre mot de passe') }}">
-                                <span class="input-group-text p-0 bg-transparent">
-                                    <i class="far fa-eye cursor-pointer p-2 w-40px aec-hide-show-password"></i>
+
+                                <span
+                                    class="input-group-text bg-light rounded-end text-secondary px-3 aec-hide-show-password aec-cursor-pointer">
+                                    <i class="far fa-eye"></i>
                                 </span>
                             </div>
                             <div class="rounded mt-1" id="psw-strength"></div>

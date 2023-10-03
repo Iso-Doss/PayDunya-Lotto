@@ -57,4 +57,14 @@ class LotteryUser extends Model
     {
         return $this->belongsTo(Status::class);
     }
+
+    /**
+     * Get the transaction.
+     *
+     * @return BelongsTo The belongs to,
+     */
+    public function transaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class);
+    }
 }
