@@ -99,7 +99,7 @@
         }
 
         a {
-            color: #2e378b;
+            color: #0972b5;
             text-decoration: none;
         }
 
@@ -153,7 +153,7 @@
             <div class="u-row-container" style="padding: 0;">
 
                 <div class="u-row"
-                     style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #2e378b;">
+                     style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #0972b5;">
 
                     <div style="border-collapse: collapse;display: table;width: 100%;">
 
@@ -459,7 +459,7 @@
                                                 align="left">
 
                                                 <div
-                                                    style="color: #2e378b; line-height: 160%; text-align: center; word-wrap: break-word;">
+                                                    style="color: #0972b5; line-height: 160%; text-align: center; word-wrap: break-word;">
 
                                                     <p style="font-size: 14px; line-height: 160%;">
 
@@ -496,7 +496,7 @@
             <div class="u-row-container" style="padding: 0;">
 
                 <div class="u-row"
-                     style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #2e378b;">
+                     style="Margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: #0972b5;">
 
                     <div style="border-collapse: collapse;display: table;width: 100%;">
 

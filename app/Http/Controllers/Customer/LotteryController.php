@@ -66,7 +66,7 @@ class LotteryController extends Controller
      */
     public function buyTicketForm(): View
     {
-        $lotteries = Lottery::whereNotNull('activated_at')->get();
+        $lotteries = Lottery::whereNotNull('activated_at')->where('status_id', '=', Status::whereCode('WAITING_DRAW')->first()?->id)->get();
         $tickets = Ticket::whereNotNull('activated_at')->get();
         return view($this->profile . '.dashboard.lottery.buy-ticket', ['lotteries' => $lotteries, 'tickets' => $tickets,]);
     }
@@ -89,6 +89,16 @@ class LotteryController extends Controller
             return back()->withErrors(['numbers_drawn' => __('Le champ numéros gagnant contient des doublons.')])->with(['error' => 'Le champ numéros gagnant est incorrect. Veuillez réessayer.'])->withInput($buyTicketData);
         }
 
+        foreach ($numbersDrawn as $numberDrawn) {
+            if ($numberDrawn > 50 || $numberDrawn <= 0) {
+                return back()->withErrors(['numbers_drawn' => __('Le champ numéros gagnant contient des valeurs incorrects, les numéros doivent etre comprise entre 1 et 50.')])->with(['error' => 'Le champ numéros gagnant est incorrect. Veuillez réessayer.'])->withInput($buyTicketData);
+            }
+        }
+
+        if (in_array($buyTicketData['lottery_id'], auth('customer')->user()->lotteries()->pluck('id')->toArray())) {
+            return back()->with(['error' => 'Vous avez déja effectuer un achat de billet pour cette loterie.'])->withInput($buyTicketData);
+        }
+
         //$this->getCheckoutInvoiceToken();
 
         try {
@@ -98,21 +108,13 @@ class LotteryController extends Controller
                 'transaction_type_id' => TransactionType::whereCode('TICKET_PURCHASE')->first()?->id,
                 'ticket_id' => $buyTicketData['ticket_id'],
                 'status_id' => Status::whereCode('SUCCESS')->first()?->id, // Status::whereCode('FAILED')->first()?->id,
-                'amount' => Ticket::find($buyTicketData['ticket_id'])->first()?->id
+                'amount' => Ticket::find($buyTicketData['ticket_id'])->first()?->price
             ]);
+            auth('customer')->user()->lotteries()->attach([$buyTicketData['lottery_id'] => ['numbers_drawn' => implode(', ', $numbersDrawn), 'transaction_id' => $transaction->id]]);
         } catch (UniqueConstraintViolationException $e) {
-            return back()->with(['error' => 'Vous avez deja effectuer un achat de billet pour cette loterie.'])->withInput($buyTicketData);
+            return back()->with(['error' => 'Une erreur s\'est produite lors de l\'achat du billet. Veuillez réessayer.'])->withInput($buyTicketData);
         }
 
-        if ($transaction ) { //&& $transaction->status->code == 'SUCCESS'
-            if (!in_array($buyTicketData['lottery_id'], auth('customer')->user()->lotteries()->pluck('id')->toArray())) {
-                auth('customer')->user()->lotteries()->attach([$buyTicketData['lottery_id'] => ['numbers_drawn' => implode(', ', $numbersDrawn)]]);
-            } else {
-                return back()->with(['error' => 'Vous avez deja effectuer un achat de billet pour cette loterie.'])->withInput($buyTicketData);
-            }
-        } else {
-            return back()->with(['error' => 'Une erreur inattendue est survenue lors de la création de la transaction.'])->withInput($buyTicketData);
-        }
         return redirect()->route($this->profile . '.lottery.index')->with(['success' => __('L\'achat de billet a été effectué avec succès et vos numéros sont bien enregistrés.')]);
     }
 

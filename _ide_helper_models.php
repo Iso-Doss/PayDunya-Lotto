@@ -45,6 +45,32 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Job
+ *
+ * @property int $id
+ * @property string $queue
+ * @property string $payload
+ * @property int $attempts
+ * @property int|null $reserved_at
+ * @property int $available_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Job newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereAttempts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereAvailableAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job wherePayload($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereQueue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Job whereReservedAt($value)
+ * @mixin \Eloquent
+ */
+	class IdeHelperJob {}
+}
+
+namespace App\Models{
+/**
  * App\Models\Lottery
  *
  * @property int $id
@@ -52,8 +78,8 @@ namespace App\Models{
  * @property string $date
  * @property int $jackpot
  * @property string|null $numbers_drawn
- * @property string|null $description
  * @property string|null $short_description
+ * @property string|null $description
  * @property string|null $image
  * @property string|null $video
  * @property int|null $status_id
@@ -112,31 +138,14 @@ namespace App\Models{
 /**
  * App\Models\LotteryUser
  *
- * @property int $user_id
- * @property int $lottery_id
- * @property int|null $status_id
- * @property int|null $amount
- * @property string|null $details
- * @property string|null $activated_at
- * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Lottery $lottery
- * @property-read \App\Models\Status|null $status
- * @property-read \App\Models\User $user
+ * @property-read \App\Models\Lottery|null $lottery
+ * @property-read \App\Models\Status $status
+ * @property-read \App\Models\Transaction|null $transaction
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser query()
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereActivatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereDetails($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereLotteryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereStatusId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|LotteryUser withoutTrashed()
  * @mixin \Eloquent
@@ -258,9 +267,10 @@ namespace App\Models{
 /**
  * App\Models\Transaction
  *
- * @property int $user_id
- * @property int $lottery_id
- * @property int $transaction_type_id
+ * @property int $id
+ * @property int|null $user_id
+ * @property int|null $lottery_id
+ * @property int|null $transaction_type_id
  * @property int|null $ticket_id
  * @property int|null $status_id
  * @property int|null $amount
@@ -269,11 +279,11 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Lottery $lottery
+ * @property-read \App\Models\Lottery|null $lottery
  * @property-read \App\Models\Status|null $status
  * @property-read \App\Models\Ticket|null $ticket
- * @property-read \App\Models\TransactionType $transactionType
- * @property-read \App\Models\User $user
+ * @property-read \App\Models\TransactionType|null $transactionType
+ * @property-read \App\Models\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction onlyTrashed()
@@ -283,6 +293,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereLotteryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereStatusId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Transaction whereTicketId($value)
@@ -366,10 +377,14 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $country_id
  * @property-read \App\Models\Country|null $country
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lottery> $lotteries
+ * @property-read int|null $lotteries_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Transaction> $transactions
+ * @property-read int|null $transactions_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

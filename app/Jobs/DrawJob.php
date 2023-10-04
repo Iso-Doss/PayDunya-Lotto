@@ -5,6 +5,8 @@ namespace App\Jobs;
 use App\Models\Lottery;
 use App\Models\Package;
 use App\Models\Status;
+use App\Models\Transaction;
+use App\Models\TransactionType;
 use App\Notifications\UserWinnerLotteryNotification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -39,6 +41,7 @@ class DrawJob implements ShouldQueue
             $lotteryStatusWaitingDraw = Status::whereCode('DRAWING')->whereEntity('LOTTERY')->first();
             if ($lotteryStatusWaitingDraw?->id) {
                 $lottery->status_id = $lotteryStatusWaitingDraw?->id;
+                $lottery->statuses()->attach([$lottery->status_id]);
             }
             $lottery->update();
 
@@ -60,19 +63,31 @@ class DrawJob implements ShouldQueue
             // Déterminer la cagnotte de ou des gagnants.
             $userJackpot = $lottery->jackpot;
             $nextLotteryJackpot = 20000000;
+            $lotteryNewStatus = null;
             if (sizeof($users_winner) <= 0) {
                 $userJackpot = 0;
                 $nextLotteryJackpot = $lottery->jackpot + 5000000;
-                $lottery->status_id = Status::whereCode('NO_WINNER')->whereEntity('LOTTERY')->first()?->id;
+                $lotteryNewStatus = Status::whereCode('NO_WINNER')->whereEntity('LOTTERY')->first()?->id;
             } elseif (sizeof($users_winner) == 1) {
-                $lottery->status_id = Status::whereCode('A_WINNER')->whereEntity('LOTTERY')->first()?->id;
+                $lotteryNewStatus = Status::whereCode('A_WINNER')->whereEntity('LOTTERY')->first()?->id;
             } elseif (sizeof($users_winner) > 1) {
                 $userJackpot = $lottery->jackpot / sizeof($users_winner);
-                $lottery->status_id = Status::whereCode('MULTIPLE_WINNER')->whereEntity('LOTTERY')->first()?->id;
+                $lotteryNewStatus = Status::whereCode('MULTIPLE_WINNER')->whereEntity('LOTTERY')->first()?->id;
             }
+            $lottery->status_id = $lotteryNewStatus;
+            $lottery->statuses()->attach([$lotteryNewStatus]);
+            $lottery->update();
 
             foreach ($users_winner as $user_winner) {
                 $user_winner->lotteries()->updateExistingPivot($lottery->id, ['amount' => $userJackpot]);
+                $transaction = Transaction::create([
+                    'user_id' => $user_winner->id,
+                    'lottery_id' => $lottery->id,
+                    'transaction_type_id' => TransactionType::whereCode('JACKPOT_LOTTERY')->first()?->id,
+                    'ticket_id' => null,
+                    'status_id' => Status::whereCode('SUCCESS')->first()?->id, // Status::whereCode('FAILED')->first()?->id,
+                    'amount' => $userJackpot
+                ]);
                 // Envoyer un mail à tous les utilisateurs qui ont gagné à cette loterie.
                 $user_winner->notify(new UserWinnerLotteryNotification($user_winner, $lottery, [
                     'title' => 'Félicitation vous avez gagner une cagnotte de loterie',
@@ -80,7 +95,6 @@ class DrawJob implements ShouldQueue
                     'view' => 'mails.lottery.index',
                 ]));
             }
-            $lottery->update();
             // Programmer le prochain tirage.
             $nextLotteryDate = '';
             if ('Tue' == date('D', strtotime($lottery->date))) {
@@ -148,9 +162,10 @@ class DrawJob implements ShouldQueue
         }
 
         $lottery = Lottery::create($lotteryData);
+        $lottery->statuses()->sync([$lotteryData['status_id']]);
 
         $addSecond = strtotime($lotteryData['date']) - strtotime(now());
-        DrawJob::dispatch($lottery, [])->delay(now()->addSecond(10));
-        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
+        DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
     }
 }

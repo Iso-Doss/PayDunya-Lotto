@@ -1,6 +1,8 @@
 INSERT INTO `statuses` (`id`, `name`, `code`, `description`, `message`, `entity`, `priority_level`, `icon`, `color`)
 VALUES (null, 'En attente du tirage', 'WAITING_DRAW', 'En attente du tirage', 'En attente du tirage', 'LOTTERY', 0,
         null, null),
+       (null, 'Tirage effectué', 'DRAWING', 'Tirage effectué', 'Tirage effectué', 'LOTTERY', 0,
+        null, null),
        (null, 'Aucun gagnant', 'NO_WINNER', 'Aucun gagnant', 'Aucun gagnant', 'LOTTERY', 0,
         null, null),
        (null, 'Un gagnant', 'A_WINNER', 'Un gagnant', 'Un gagnant', 'LOTTERY', 0,

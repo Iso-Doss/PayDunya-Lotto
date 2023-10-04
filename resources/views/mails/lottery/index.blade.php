@@ -22,7 +22,7 @@
 
                         <span style="font-size: 18px; line-height: 28.8px;">
 
-                            {{ $message }}
+                            {{ __('Félicitation vous avez gagner une cagnotte de loterie') }}
 
                         </span>
 
