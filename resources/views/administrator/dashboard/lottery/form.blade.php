@@ -92,9 +92,9 @@
                                 {{ __('Courte description') }}
                             </label>
 
-                            <input type="number" name="short_description" id="lottery-short-description"
+                            <input type="text" name="short_description" id="lottery-short-description"
                                    class="form-control lottery-short-description @error('short_description'){{'is-invalid'}}@enderror"
-                                   value="{{ old('short_description', $lottery->price) }}"
+                                   value="{{ old('short_description', $lottery->short_description) }}"
                                    placeholder="{{ __('Veuillez entrer la cagnotte de la loterie') }}">
                             @error('short_description')
                             <div class="form-text text-danger">

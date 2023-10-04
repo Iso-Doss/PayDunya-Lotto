@@ -44,15 +44,15 @@
                                         {{ __('Rechercher par le statut du billet') }}
                                     </option>
                                     <option
-                                        value="ENABLE" @selected(($input['status'] ?? '') == "ENABLE")>
+                                            value="ENABLE" @selected(($input['status'] ?? '') == "ENABLE")>
                                         {{ __('Actif') }}
                                     </option>
                                     <option
-                                        value="DISABLE" @selected(($input['status'] ?? '') == "DISABLE")>
+                                            value="DISABLE" @selected(($input['status'] ?? '') == "DISABLE")>
                                         {{ __('Inactif') }}
                                     </option>
                                     <option
-                                        value="TRASHED" @selected(($input['status'] ?? '') == "TRASHED")>
+                                            value="TRASHED" @selected(($input['status'] ?? '') == "TRASHED")>
                                         {{ __('Supprimer') }}
                                     </option>
                                 </select>
@@ -112,7 +112,7 @@
                                 <!-- Image -->
                                 <td>
                                     <div
-                                        class="btn btn-round mb-0 bg-orange bg-opacity-10 text-orange w-70px h-70px d-flex justify-content-center align-items-center">
+                                            class="btn btn-round mb-0 bg-orange bg-opacity-10 text-orange w-70px h-70px d-flex justify-content-center align-items-center">
                                         @if(!@empty($ticket->image))
                                             <a href="#" role="button" data-bs-toggle="modal"
                                                data-bs-target="#ticket-image-modal-{{$ticket->id}}">
@@ -146,7 +146,7 @@
                                                 </span>
                                             @else
                                                 <span
-                                                    class="badge bg-success bg-opacity-10 text-success">
+                                                        class="badge bg-success bg-opacity-10 text-success">
                                                     {{ __('Billet actif') }}
                                                 </span>
                                             @endif
@@ -231,11 +231,11 @@
                                         </a>
 
                                         <a
-                                            class="btn btn-danger-soft btn-round aec-click-modal mb-1"
-                                            aec-modal-target="ticket-delete-modal-{{$ticket->id}}"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top" aria-label="{{ __('Supprimer') }}"
-                                            data-bs-original-title="{{ __('Supprimer') }}">
+                                                class="btn btn-danger-soft btn-round aec-click-modal mb-1"
+                                                aec-modal-target="ticket-delete-modal-{{$ticket->id}}"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top" aria-label="{{ __('Supprimer') }}"
+                                                data-bs-original-title="{{ __('Supprimer') }}">
                                             <i class="bi bi-trash"></i>
                                         </a>
 
@@ -362,7 +362,7 @@
                                                                 </span>
                                                             @else
                                                                 <span
-                                                                    class="badge bg-success bg-opacity-10 text-success">
+                                                                        class="badge bg-success bg-opacity-10 text-success">
                                                                     {{ __('Billet actif') }}
                                                                 </span>
                                                             @endif
@@ -379,6 +379,17 @@
                                                 </td>
                                                 <td>
                                                     {{ __(' :ticket_price FCFA', ['ticket_price' => number_format($ticket->price, thousands_separator: ' ')]) }}
+                                                </td>
+                                            </tr>
+                                        @endif
+
+                                        @if(!is_null($ticket->short_description))
+                                            <tr>
+                                                <td class="fw-bold">
+                                                    {{ __('Courte description : ') }}
+                                                </td>
+                                                <td>
+                                                    {{ $ticket->short_description }}
                                                 </td>
                                             </tr>
                                         @endif
@@ -415,8 +426,8 @@
                  aria-hidden="true">
                 <div class="modal-dialog">
                     <form
-                        action="{{ route($profile . '.ticket.enable-disable', ['ticket' => $ticket, 'new_status' => (is_null($ticket->activated_at)) ? 'enable' : 'disable']) }}"
-                        method="post">
+                            action="{{ route($profile . '.ticket.enable-disable', ['ticket' => $ticket, 'new_status' => (is_null($ticket->activated_at)) ? 'enable' : 'disable']) }}"
+                            method="post">
                         <div class="modal-content">
                             <!-- Modal header -->
                             <div class="modal-header">

@@ -77,7 +77,7 @@
 
                             <input type="text" name="short_description" id="ticket-short-description"
                                    class="form-control ticket-name @error('short_description'){{'is-invalid'}}@enderror"
-                                   value="{{ old('short_description', $ticket->price) }}"
+                                   value="{{ old('short_description', $ticket->short_description) }}"
                                    placeholder="{{ __('Veuillez entrer la description courte du billet') }}">
                             @error('short_description')
                             <div class="form-text text-danger">
