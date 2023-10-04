@@ -165,7 +165,7 @@ class DrawJob implements ShouldQueue
         $lottery->statuses()->sync([$lotteryData['status_id']]);
 
         $addSecond = strtotime($lotteryData['date']) - strtotime(now());
-        DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
-        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
+        DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
     }
 }

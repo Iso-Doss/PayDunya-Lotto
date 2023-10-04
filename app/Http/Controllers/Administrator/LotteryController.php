@@ -107,8 +107,8 @@ class LotteryController extends Controller
         $lottery->statuses()->sync([$lotteryData['status_id']]);
 
         $addSecond = strtotime($lotteryData['date']) - strtotime(now());
-        DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
-        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
 
         return redirect()->route($this->profile . '.lottery.index')->with(['success' => __('La loterie :lottery a été enregistrée avec succès.', ['lottery' => $lottery->name])]);
     }
@@ -176,8 +176,8 @@ class LotteryController extends Controller
         }
 
         $addSecond = strtotime($lotteryData['date']) - strtotime(now());
-        DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
-        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
 
         return redirect()->route($this->profile . '.lottery.index')->with(['success' => __('La loterie :lottery a été modifiée avec succès.', ['lottery' => $lottery->name])]);
     }

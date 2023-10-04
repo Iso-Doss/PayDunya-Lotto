@@ -8,13 +8,7 @@ PayDunya Lotto est une loterie où les participants peuvent jouer en achetant un
 - Les administrateurs
 
 ## Fonctionnalités par profils
-### Un utilisateur aura la possibilité de
-- Les utilisateurs
-- Les administrateurs
-
-## Diagramme de cas d’utilisation
-
-## Diagramme de cas de classe
+https://docs.google.com/document/d/122qylRTeTwBDIjW1YianodSRYoh_gQf2z-UzKYXaiNg/edit
 
 ## Pré-requis
 - PHP > 8.1 (installer et disponible en ligne de commande)
