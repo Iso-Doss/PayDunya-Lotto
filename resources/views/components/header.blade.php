@@ -183,7 +183,14 @@
 
                     <li class="nav-item">
                         <a class="nav-link @if($routeName == $profile . '.sites') active @endif"
-                           href="">
+                           href="#comment-commencer">
+                            {{ __('Comment ca marche ?') }}
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @if($routeName == $profile . '.sites') active @endif"
+                           href="#lotteries">
                             {{ __('Tirages') }}
                         </a>
                     </li>

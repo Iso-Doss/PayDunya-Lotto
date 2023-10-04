@@ -19,7 +19,7 @@
                             </div>
                             <!-- SVG Image -->
 
-                            <img src="@yield('base.auth.banner', asset('assets/images/auth-illustration.svg'))"
+                            <img src="@yield('base.auth.banner', asset('assets/images/auth-illustration-.svg'))"
                                  class="mt-5" alt="{{ __('Illustration de la bannière des pages d\'authentification') }}">
 
                             <!-- Info -->

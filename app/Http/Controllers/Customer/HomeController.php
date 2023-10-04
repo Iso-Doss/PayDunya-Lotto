@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lottery;
+use App\Models\Status;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -24,7 +26,10 @@ class HomeController extends Controller
      */
     public function index(): View
     {
-        return view($this->profile . '.index');
+        $lotteries = Lottery::where('status_id', '=', Status::whereCode('WAITING_DRAW')->first()?->id)->whereNotNull('activated_at')
+            ->orderBy('id', 'desc')
+            ->paginate(3);
+        return view($this->profile . '.index', ['lotteries' => $lotteries]);
     }
 
     /**
