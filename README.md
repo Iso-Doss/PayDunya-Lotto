@@ -39,3 +39,13 @@ PayDunya Lotto est une loterie où les participants peuvent jouer en achetant un
     php artisan serve
     
     php artisan queue:listen
+
+    Importer dans votre base de donner les donnés au format .sql disponible dans le dossier database/data (countries.sql, statutses.sql, tickets.sql, transaction_types.sql et users.sql)
+
+## Comptes d'utilisateurs
+- Utilisateur / Joueur : 
+    - Email : paydunyalotto@gmail.com
+    - Mot de passe : paydunyalotto@gmail.com
+- Administrateur : 
+    - Email : paydunyalotto@gmail.com
+    - Mot de passe : paydunyalotto@gmail.com

@@ -110,7 +110,7 @@ class LotteryController extends Controller
                 'status_id' => Status::whereCode('SUCCESS')->first()?->id, // Status::whereCode('FAILED')->first()?->id,
                 'amount' => Ticket::find($buyTicketData['ticket_id'])->first()?->price
             ]);
-            auth('customer')->user()->lotteries()->attach([$buyTicketData['lottery_id'] => ['numbers_drawn' => implode(', ', $numbersDrawn), 'transaction_id' => $transaction->id]]);
+            auth('customer')->user()->lotteries()->attach([$buyTicketData['lottery_id'] => ['numbers_drawn' => implode(", ", $numbersDrawn), 'transaction_id' => $transaction->id]]);
         } catch (UniqueConstraintViolationException $e) {
             return back()->with(['error' => 'Une erreur s\'est produite lors de l\'achat du billet. Veuillez réessayer.'])->withInput($buyTicketData);
         }

@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\Lottery;
-use App\Models\Package;
 use App\Models\Status;
 use App\Models\Transaction;
 use App\Models\TransactionType;
@@ -34,7 +33,7 @@ class DrawJob implements ShouldQueue
         $lottery = Lottery::find($this->lottery->id);
         if ($lottery->status->code == 'WAITING_DRAW') {
             // Effectuer le tirage.
-            //$numbersDrawnArray = $this->drawing();
+            $numbersDrawnArray = $this->drawing();
             $numbersDrawnArray = [1, 2, 3, 4, 5, 6, 7];
             $lottery->numbers_drawn = $numbersDrawnString = implode(", ", $numbersDrawnArray);
             // Mettre à jour le status de la loterie.
@@ -52,7 +51,8 @@ class DrawJob implements ShouldQueue
             if ($lottery->users) {
                 foreach ($lottery->users as $user) {
                     $lotteryUserWithNumbersDrawn = $user->lotteries()->where('lottery_id', '=', $lottery->id)->first();
-                    if ($lotteryUserWithNumbersDrawn->numbers_drawn == $numbersDrawnString) {
+                    var_dump($lotteryUserWithNumbersDrawn->pivot->numbers_drawn, $numbersDrawnString );
+                    if ($lotteryUserWithNumbersDrawn->pivot->numbers_drawn == $numbersDrawnString) {
                         $users_winner[] = $user;
                         $user->lotteries()->updateExistingPivot($lottery->id, ['status_id' => Status::whereCode('WINNER')->whereEntity('LOTTERY_USER')->first()?->id]);
                     } else {
@@ -165,7 +165,7 @@ class DrawJob implements ShouldQueue
         $lottery->statuses()->sync([$lotteryData['status_id']]);
 
         $addSecond = strtotime($lotteryData['date']) - strtotime(now());
-        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
-        DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
+        DrawJob::dispatch($lottery, [])->delay(now()->addSecond(60));
+        //DrawJob::dispatch($lottery, [])->delay(now()->addSecond($addSecond));
     }
 }
