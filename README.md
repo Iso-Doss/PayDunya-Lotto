@@ -25,10 +25,17 @@ PayDunya Lotto est une loterie où les participants peuvent jouer en achetant un
 
 ## Étapes de déploiement
     git clone https://github.com/Iso-Doss/PayDunya-Lotto.git paydunya-lotto
+    
     cd paydunya-lotto
+    
     composer install
+    
     npm install
+    
     php artisan migrate (onfigurer son fichier d'environment à partir du fichier .env.example (Plus précisément la partir relative à la base de donnée))
+    
     php artisan storage:link
+    
     php artisan serve
+    
     php artisan queue:listen
