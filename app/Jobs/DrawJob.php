@@ -122,16 +122,20 @@ class DrawJob implements ShouldQueue
      * Get seven distinct number.
      *
      * @return array $numbers_drawn The numbers drawn.
+     * @throws \Exception
      */
     public function drawing(): array
     {
-        $numbers_drawn = [];
-        $n = range(1, 50);
-        shuffle($n);
-        for ($x = 0; $x < 7; $x++) {
-            $numbers_drawn[] = $n[$x];
+        $numbersDrawn = [];
+        $numbersDrawnWithKey = [];
+        while (sizeof($numbersDrawnWithKey) < 7) {
+            $random_int = random_int(1, 50);
+            $numbersDrawnWithKey[$random_int] = $random_int;
         }
-        return $numbers_drawn;
+        foreach ($numbersDrawnWithKey as $number_drawn) {
+            $numbersDrawn[] = $number_drawn;
+        }
+        return $numbersDrawn;
     }
 
     public function createLottery(array $lotteryData)

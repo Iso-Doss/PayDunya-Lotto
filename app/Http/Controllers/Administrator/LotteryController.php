@@ -10,6 +10,7 @@ use App\Models\Job;
 use App\Models\Lottery;
 use App\Models\Status;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -33,6 +34,7 @@ class LotteryController extends Controller
      */
     public function index(LotteryFilterRequest $request): View
     {
+        dd($this->drawing());
         $lotteryFilterData = $request->validated();
 
         $lotteries = Lottery::when($lotteryFilterData['name'] ?? '', function ($query) use ($lotteryFilterData) {
@@ -78,17 +80,19 @@ class LotteryController extends Controller
     {
         $lotteryData = $request->validated();
 
-        if ('Tue' != date('D', strtotime($lotteryData['date'])) && 'Thu' != date('D', strtotime($lotteryData['date']))) {
-            return back()->withErrors(['date' => 'Le champ date de la loterie doit être une date dont le jour est soit un Mardi soit un Jeudi.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.']);
+        $carbonLotteryData = new Carbon($lotteryData['date']);
+
+        if (2 != $carbonLotteryData->dayOfWeek && 4 != $carbonLotteryData->dayOfWeek) {
+            return back()->withErrors(['date' => 'Le champ date de la loterie doit être une date dont le jour est soit un Mardi soit un Jeudi.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.'])->withInput($lotteryData);
         }
 
         if (strtotime(now()) > strtotime($lotteryData['date'])) {
-            return back()->withErrors(['date' => 'Le champ date de la loterie doit être supérieur a la date d\'aujourd\'hui.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.']);
+            return back()->withErrors(['date' => 'Le champ date de la loterie doit être supérieur a la date d\'aujourd\'hui.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.'])->withInput($lotteryData);
         }
 
         $alreadyLottery = Lottery::where('date', '=', $lotteryData['date'])->first();
         if ($alreadyLottery) {
-            return back()->withErrors(['date' => 'Le champ date de la loterie contient une valeur qui est deja prit par une autre loterie.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.', 'input' => $lotteryData]);
+            return back()->withErrors(['date' => 'Le champ date de la loterie contient une valeur qui est deja prit par une autre loterie.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.'])->withInput($lotteryData);
         }
 
         if (!empty($lotteryData['image'])) {
@@ -139,8 +143,9 @@ class LotteryController extends Controller
             return back()->with(['error' => 'Impossible de mettre a jour cette loterie, le tirage a déja eu lieu.'])->withInput($lotteryData);;
         }
 
+        $carbonLotteryData = new Carbon($lotteryData['date']);
 
-        if ('Tue' != date('D', strtotime($lotteryData['date'])) && 'Thu' != date('D', strtotime($lotteryData['date']))) {
+        if (2 != $carbonLotteryData->dayOfWeek && 4 != $carbonLotteryData->dayOfWeek) {
             return back()->withErrors(['date' => 'Le champ date de la loterie doit être une date dont le jour est soit un Mardi soit un Jeudi.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.'])->withInput($lotteryData);;
         }
 
@@ -150,7 +155,7 @@ class LotteryController extends Controller
 
         $alreadyLottery = Lottery::where('date', '=', $lotteryData['date'])->where('id', '<>', $lottery->id)->first();
         if ($alreadyLottery) {
-            return back()->withErrors(['date' => 'Le champ date de la loterie contient une valeur qui est deja prit par une autre loterie.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.', 'input' => $lotteryData])->withInput($lotteryData);;
+            return back()->withErrors(['date' => 'Le champ date de la loterie contient une valeur qui est deja prit par une autre loterie.'])->with(['error' => 'Le champ date est incorrect. Veuillez réessayer.'])->withInput($lotteryData);;
         }
 
         if (!empty($lotteryData['image'])) {
